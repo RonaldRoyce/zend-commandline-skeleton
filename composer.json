@@ -8,6 +8,12 @@
         "mvc",
         "zf"
     ],
+    "repositories": [
+	     {
+	         "type": "vcs",
+	         "url": "https://github.com/ronaldroyce/zend-commandline-skeleton" 
+	    }
+    ],
     "homepage": "http://github.com/ronaldroyce/",
     "minimum-stability": "dev",
     "prefer-stable": true,
