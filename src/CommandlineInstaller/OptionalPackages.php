@@ -22,6 +22,9 @@ use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
+use Zend\Stdlib\ArrayUtils;
+use ZF\Configuration\ConfigResource;
+use ZF\Configuration\ConfigWriter;
 
 /**
  * Composer installer script
@@ -162,19 +165,48 @@ class OptionalPackages {
 	 *
 	 * @codeCoverageIgnore
 	 */
+
 	public static function install(Event $event): void{
 		$installer = new self($event->getIO(), $event->getComposer());
 
-		$installer->io->write('<info>Setting up optional packages</info>');
+		$installer->io->write('<info>Updating global.php....</info>');
 
-		$installer->setupDataAndCacheDir();
-		$installer->removeDevDependencies();
-		$installer->setInstallType($installer->requestInstallType());
-		$installer->setupDefaultApp();
-		$installer->promptForOptionalPackages();
-		$installer->updateRootPackage();
-		$installer->removeInstallerFromDefinition();
-		$installer->finalizePackage();
+		$config = require __DIR__ . "/config.php";
+		$globalConfig = require __DIR__ . "/../../config/autoload/global.php";
+
+		$mergedConfig = ArrayUtils::merge($globalConfig, $config);
+
+		$str = "return\n";
+
+		$str .= json_encode($mergedConfig, JSON_PRETTY_PRINT);
+
+		$str .= "\n";
+
+		file_put_contents(__DIR__ . "/../../config/autoload/global.php", $str);
+
+		return;
+
+		$serviceManager = require __DIR__ . '/../../config/container.php';
+
+		$installer->addToConfig($intaller->io, $serviceManager);
+		/*
+			echo "Class: " . get_class($event) . "\n";
+
+			print_r($event);
+
+			throw new \Exception("Failed");
+
+			$installer->io->write('<info>Setting up optional packages</info>');
+
+			$installer->setupDataAndCacheDir();
+			$installer->removeDevDependencies();
+			$installer->setInstallType($installer->requestInstallType());
+			$installer->setupDefaultApp();
+			$installer->promptForOptionalPackages();
+			$installer->updateRootPackage();
+			$installer->removeInstallerFromDefinition();
+			$installer->finalizePackage();
+		*/
 	}
 
 	public function __construct(IOInterface $io, Composer $composer, string $projectRoot = null) {
@@ -196,6 +228,27 @@ class OptionalPackages {
 
 		// Source path for this file
 		$this->installerSource = realpath(__DIR__) . '/';
+	}
+
+	protected function addToConfig($io, $serviceManager) {
+
+		$origConfig = require __DIR__ . '/../../config/autoload/global.php';
+
+		$writer = $serviceManager->get(ConfigWriter::class);
+
+		$writer->setUseClassNameScalars(true);
+		$writer->setUseBracketArraySyntax(true);
+
+		$configResource = new ConfigResource($origConfig, __DIR__ . '/../../config/autoload/global.php', $writer);
+
+		$fullControllerName = sprintf(
+			'\%s\Controller\%s',
+			$this->appNamespace,
+			$routeControllerName
+		);
+
+		$configResource->patch($this->config, true);
+
 	}
 
 	/**
