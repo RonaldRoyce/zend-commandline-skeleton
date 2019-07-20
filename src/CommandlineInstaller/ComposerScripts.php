@@ -35,7 +35,14 @@ class ComposerScripts {
 		self::writeGlobalConfig($writer, $projectRoot, $config);
 		self::writeDoctrineConfig($writer, $projectRoot, $doctrineGlobalConfig, $doctrineLocalConfig);
 
-		$io->write(sprintf("<info>Updated file '%s'</info>", __DIR__ . "/../../config/autoload/global.php"));
+		if (!file_exists($projectRoot . "data")) {
+			mkdir($projectRoot . "data");
+			mkdir($projectRoot . "data/cache");
+		} else if (!file_exists($projectRoot . "data/cache")) {
+			mkdir($projectRoot . "data/cache");
+		}
+
+		$io->write("<info>****  Post install for zend-commandline-skeleton completed successfully **********");
 
 		static::clearCompiled($event);
 	}
