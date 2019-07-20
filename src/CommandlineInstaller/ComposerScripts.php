@@ -81,8 +81,6 @@ class ComposerScripts {
 	}
 
 	protected static function clearCompiled($event) {
-		$io = $event->getIO();
 
-		$io->write('<info>Clear Compiled</info>');
 	}
 }
