@@ -32,8 +32,6 @@ function GetEntityManager() {
 		'dbname' => $config['doctrine']['connection']['orm_default']['params']['dbname'],
 	);
 
-	print_r($dbParams);
-
 	$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 	$entityManager = EntityManager::create($dbParams, $config);
 
