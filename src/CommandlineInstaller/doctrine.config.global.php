@@ -4,7 +4,7 @@ return [
 		'connection' => [
 			// default connection name
 			'orm_default' => [
-				'driverClass' => \Doctrine\DBAL\Driver\PDOMySql\Driver::class,
+				'driverClass' => 'pdo_mysql',
 				'params' => [
 					'host' => 'localhost',
 					'port' => '3306',
