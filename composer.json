@@ -31,7 +31,8 @@
     "autoload": {
         "psr-4": {
             "Application\\": "module/Application/src/",
-            "CommandlineInstaller\\": "src/CommandlineInstaller/"
+            "CommandlineInstaller\\": "src/ComInstaller/",
+	    "RonaldRoyce\\CommandLine\\": "src/CommandLine/"            
         }
     },
     "autoload-dev": {
