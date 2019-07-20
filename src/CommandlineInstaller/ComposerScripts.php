@@ -21,7 +21,7 @@ class ComposerScripts {
 		$evt = $event;
 		$io = $evt->getIO();
 
-		$io->write('<info>Post Install</info>');
+		$io->write("<info>****  Executing post install for zend-commandline-skeleton **********");
 
 		$config = require __DIR__ . "/config.php";
 		$doctrineGlobalConfig = require __DIR__ . "/doctrine.config.global.php";
